@@ -35,6 +35,8 @@ Some basic Grunt automation is set:
 Copyright
 =========
 
+This copyright includes all code related to the application. All following rights are reserved: layout, look and feel, images, text, etc.
+
 Copyright 2013 Viljami Peltola
 
 Licensed under the Apache License, Version 2.0 (the "License");

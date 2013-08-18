@@ -1,0 +1,10 @@
+
+<input type="text" id="passphrase" name="passphrase" >
+
+{{#oauth_token}}
+<a href="https://www.dropbox.com/1/oauth/authorize?oauth_token={{oauth_token}}">Allow Dropbox Access.</a>
+{{/oauth_token}}
+
+{{^oauth_token}}
+<p>Page will refresh in: <span>5</span>s. Until auth link will appear.</p>
+{{/oauth_token}}

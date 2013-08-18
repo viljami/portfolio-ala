@@ -1,0 +1,35 @@
+{
+    "name": "PortfolioNatasha",
+    "preferGlobal": false,
+    "version": "0.0.1",
+    "author": "Viljami Peltola <viljami.peltola@iki.fi>",
+    "description": "Portfolio using dropbox as db and file storage.",
+    "repository": {},
+    "contributors": [{
+        "name": "Viljami Peltola",
+        "email": "viljami.peltola@iki.fi"
+    }],
+    "bin": {
+        "http-server": "./server/server"
+    },
+	"dependencies": {
+		"express": "3.x",
+        "hogan-express": "0.3.x",
+		"dbox": "0.6.x",
+        "lodash": "1.x",
+        "when": "2.3.x"
+	},
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-jshint": "~0.6.0",
+        "grunt-contrib-nodeunit": "~0.2.0",
+        "grunt-contrib-uglify": "~0.2.2",
+        "grunt-contrib-less": "0.7.x",
+        "grunt-contrib-watch": "0.5.x",
+        "grunt-mocha-test": "0.6.x"
+    },
+     "engines": {
+        "node": "0.10.x",
+        "npm": "1.2.x"
+    }
+}
