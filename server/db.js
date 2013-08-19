@@ -3,16 +3,21 @@ var Dropbox = require('./dropbox.js');
 var _ = require('lodash');
 var when = require('when');
 
-var _projects = {
-        images: [],
-
-};
+var _projects = [{
+    title: '',
+    client: '',
+    time: '',
+    brief: '',
+    thumbnail: '',
+    tags: [],
+    images: []
+}];
 var _frontPage = {
     projects: _projects,
     about: {
         image: '',
         text: '',
-        file: '' // cv.pdf
+        cvFile: '' // cv.pdf
     }
 };
 var _dropbox = new Dropbox({

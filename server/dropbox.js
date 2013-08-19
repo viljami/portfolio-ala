@@ -134,7 +134,7 @@ module.exports = function(options){
 
     this.readDir = function(path){
         if (! _client || ! path) return;
-        if (_.has(_paths, path)) return _paths[path];
+        // if (_.has(_paths, path)) return _paths[path];
 
         var def = when.defer();
         _client.readdir(path, function(status, reply){
@@ -150,16 +150,16 @@ module.exports = function(options){
         var def = when.defer();
         if (! _client || ! path) return;
         if (file) path += file;
-        if (_.has(_files, path)) {
-            _.defer(function(){
-                def.resolve(_files[path]);
-            });
-        } else {
+        // if (_.has(_files, path)) {
+        //     _.defer(function(){
+        //         def.resolve(_files[path]);
+        //     });
+        // } else {
             _client.get(path, function(status, reply){
                 _files[path] = reply;
                 def.resolve(reply);
             });
-        }
+        // }
         return def.promise;
     };
 
