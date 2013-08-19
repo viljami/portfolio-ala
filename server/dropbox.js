@@ -27,9 +27,10 @@ module.exports = function(options){
     var _setupReadyCallback = options.setupReady;
 
     var defaultFileStructure = {
+        '/_site': '',
         '/about.txt': 'This is an example about me file.',
         '/about.jpg': '',
-        '/cv-firstname-lastname.pdf': '',
+        '/cv-firstname-lastname-year.pdf': '',
         '/project1/project.txt': 'client: test-client\n brief: test-brief\n time: 1 day\n tag: test-tag\n',
         '/project1/01-example-image.jpg': '',
         '/project1/02-dashes-turn-spaces-for-image-name.jpg': '',

@@ -12,14 +12,13 @@ var _projects = [{
     tags: [],
     images: []
 }];
+
 var _frontPage = {
-    projects: _projects,
-    about: {
-        image: '',
-        text: '',
-        cvFile: '' // cv.pdf
-    }
+    image: '',
+    text: '',
+    cvFile: '' // cv.pdf
 };
+
 var _dropbox = new Dropbox({
     app_key: process.env.DROPBOX_API_KEY,
     app_secret: process.env.DROPBOX_API_SECRET,
@@ -28,14 +27,126 @@ var _dropbox = new Dropbox({
         // fetch the data and keep doing it
     }
 });
-
 _dropbox.connect();
+
+var _processProject = function(name, files){
+    if (! files || !files.length) return;
+
+    var rootDef = when.defer();
+    var defs = [];
+    var project = {
+        title: name,
+        client: '',
+        time: '',
+        brief: '',
+        thumbnail: '',
+        tags: [],
+        images: []
+    };
+
+    _.each(files, function(file){
+        var def = when.defer();
+        defs.push(def.promise);
+        if (/.txt$/i.test(file)){
+            when(_dropbox.getFile(file))
+            .then(function(fileString){
+                var lines = fileString.split('\n');
+                _.each(lines, function(line){
+                    var projectProperty = line.split(':');
+                    var key = _.first(projectProperty);
+                    if (key === 'tags'){
+                        project[key] = projectProperty.split(', ');
+                    } else {
+                        project[key] = _.rest(projectProperty).join(':');
+                    }
+                });
+                def.resolve();
+            });
+        } else if (/thumbnail.(img|png|jpeg|bmp|gif)$/i.test(file)){
+            project.thumbnail = file;
+            def.resolve();
+        } else if (/.(img|png|jpeg|bmp|gif)$/i.test(file)){
+            project.images.push(file);
+            def.resolve();
+        }
+    });
+    when.all(defs)
+    .then(function(){
+        rootDef.resolve(project);
+    });
+
+    return rootDef.promise;
+};
+
+var _readDir = function(path){
+    if (! path) return;
+
+    var def = when.defer();
+    when(_dropbox.readDir(path))
+    .then(function(contents){
+        def.resolve(contents);
+    }, function(err){
+        def.reject(err);
+    });
+    return def.promise;
+};
 
 module.exports = {
     setup: function(req, res){
         if (_dropbox.isConnected()) return res.redirect('/');
 
         _dropbox.setup(req, res);
+    },
+
+    fetchData: function(){
+        when(_readDir('/'))
+        .then(function(files){
+            var all = _.groupBy(files, function(file){
+                var splitted = file.split('/');
+                return splitted.length > 2 ? splitted[1] : '/';
+            });
+
+            var projects = _.filter(all, function(val, key){
+                return key !== '/';
+            });
+
+            _.each(projects, function(val, key){
+                when(_processProject(key, val))
+                .then(function(project){
+                    _projects.push(project);
+                });
+            });
+
+            var root = _.chain(all)
+            .filter(function(val, key){
+                return key === '/';
+            })
+            .map(function(val){
+                return val;
+            })
+            .map(function(val){
+                var obj = {};
+                if (/^\/cv/.test(val)){
+                    obj.cv = val;
+                } else {
+                    obj[val.split('/')[1]] = val;
+                }
+                return obj;
+            });
+
+            var frontPage = {
+                image: root['about.jpg'],
+                text: '',
+                cvFile: root.cv // cv.pdf
+            };
+
+            when(_dropbox.getFile(root['about.txt']))
+            .then(function(fileString){
+                frontPage.about.text = fileString;
+            });
+
+            _frontPage = frontPage;
+        });
     },
 
     ready: function(){
@@ -51,7 +162,7 @@ module.exports = {
     },
 
     getFrontPage: function(){
-        return _.extend(_frontPage, {projects: _projects});
+        return _.extend(_.clone(_frontPage), {projects: _.clone(_projects)});
     },
 
     getFile: function(path, file){
@@ -66,5 +177,7 @@ module.exports = {
             def.reject(err);
         });
         return def.promise;
-    }
+    },
+
+    readDir: _readDir
 };
