@@ -13,7 +13,7 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "public/natasha.css": "styles.less"
+          "public/ala.css": "styles.less"
         }
       },
       production: {
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
           yuicompress: true
         },
         files: {
-          "public/natasha.yui.css": "styles.less"
+          "public/ala.yui.css": "styles.less"
         }
       }
     },
