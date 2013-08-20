@@ -50,6 +50,7 @@ module.exports = function(options){
                 });
             }
         });
+        console.log('setupREADY');
         _setupReadyCallback();
     };
 
@@ -94,6 +95,7 @@ module.exports = function(options){
 
             _api = api;
             _client = _dbox.client(_api.access_token);
+            _setupPortfolio();
             return;
         }
         console.log('CONNECT 4');
@@ -135,14 +137,12 @@ module.exports = function(options){
 
     this.readDir = function(path){
         if (! _client || ! path) return;
-        // if (_.has(_paths, path)) return _paths[path];
-
+        if (_.has(_paths, path)) return _paths[path];
         var def = when.defer();
         _client.readdir(path, function(status, reply){
             _paths[path] = reply;
+            console.log('readDir', reply);
             def.resolve(reply);
-        }, function(err){
-            def.reject(err);
         });
         return def.promise;
     };

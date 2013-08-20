@@ -11,6 +11,7 @@ module.exports = function(app){
     });
 
     app.get('/', function(req,res){
+        db.fetchData();
         var home = db.getFrontPage();
         res.render('home-page', home);
     });
